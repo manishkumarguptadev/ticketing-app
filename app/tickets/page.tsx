@@ -8,8 +8,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import prisma from "@/prisma/client";
 
-function TicketsPage() {
+async function TicketsPage() {
+  const tickets = await prisma.ticket.findMany();
   return (
     <>
       <div className="mb-4 flex items-center">
@@ -26,23 +28,87 @@ function TicketsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell>
-                <div className="font-medium">Liam Johnson</div>
-                <div className="flex gap-2">
-                  <Badge className="sm:hidden">Fulfilled</Badge>
-                  <Badge className="sm:hidden">High</Badge>
-                </div>
-                <div className="font-medium md:hidden">2023-06-23</div>
-              </TableCell>
-              <TableCell className="hidden sm:table-cell">
-                <Badge className="text-xs">Fulfilled</Badge>
-              </TableCell>
-              <TableCell className="hidden sm:table-cell">
-                <Badge className="text-xs">High</Badge>
-              </TableCell>
-              <TableCell className="hidden md:table-cell">2023-06-23</TableCell>
-            </TableRow>
+            {tickets.map((ticket) => (
+              <TableRow key={ticket.id}>
+                <TableCell>
+                  <div className="font-medium">{ticket.title}</div>
+                  <div className="flex gap-2">
+                    <Badge
+                      className={`${
+                        ticket.status === "CLOSED"
+                          ? "bg-green-50 text-green-500"
+                          : ticket.status === "OPEN"
+                            ? "bg-red-50 text-red-500"
+                            : "bg-violet-50 text-violet-500"
+                      } sm:hidden`}
+                      variant={"outline"}
+                    >
+                      {ticket.status}
+                    </Badge>
+                    <Badge
+                      className={`${
+                        ticket.priority === "LOW"
+                          ? "bg-green-50 text-green-500"
+                          : ticket.priority === "HIGH"
+                            ? "bg-red-50 text-red-500"
+                            : "bg-violet-50 text-violet-500"
+                      } sm:hidden`}
+                      variant={"outline"}
+                    >
+                      {ticket.priority}
+                    </Badge>
+                  </div>
+                  <div className="font-medium md:hidden">
+                    {ticket.createdAt.toLocaleDateString("en-US", {
+                      year: "2-digit",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "numeric",
+                      minute: "2-digit",
+                      hour12: true,
+                    })}
+                  </div>
+                </TableCell>
+                <TableCell className="hidden sm:table-cell">
+                  <Badge
+                    className={
+                      ticket.status === "CLOSED"
+                        ? "bg-green-50 text-green-500"
+                        : ticket.status === "OPEN"
+                          ? "bg-red-50 text-red-500"
+                          : "bg-violet-50 text-violet-500"
+                    }
+                    variant={"outline"}
+                  >
+                    {ticket.status}
+                  </Badge>
+                </TableCell>
+                <TableCell className="hidden sm:table-cell">
+                  <Badge
+                    className={
+                      ticket.priority === "LOW"
+                        ? "bg-green-50 text-green-500"
+                        : ticket.priority === "HIGH"
+                          ? "bg-red-50 text-red-500"
+                          : "bg-violet-50 text-violet-500"
+                    }
+                    variant={"outline"}
+                  >
+                    {ticket.priority}
+                  </Badge>
+                </TableCell>
+                <TableCell className="hidden md:table-cell">
+                  {ticket.createdAt.toLocaleDateString("en-US", {
+                    year: "2-digit",
+                    month: "2-digit",
+                    day: "2-digit",
+                    hour: "numeric",
+                    minute: "2-digit",
+                    hour12: true,
+                  })}
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </div>
