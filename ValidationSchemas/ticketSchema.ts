@@ -7,3 +7,5 @@ export const ticketSchema = z.object({
   status: z.nativeEnum(Status).optional(),
   priority: z.nativeEnum(Priority).optional(),
 });
+
+type FormData = z.infer<typeof ticketSchema>;

@@ -1,5 +1,6 @@
 import { ticketSchema } from "@/ValidationSchemas/ticketSchema";
 import prisma from "@/prisma/client";
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -19,5 +20,6 @@ export async function POST(request: NextRequest) {
   }
 
   const newTicket = await prisma.ticket.create({ data: { ...result.data } });
+  revalidatePath("/tickets");
   return NextResponse.json({ success: true, data: newTicket }, { status: 201 });
 }

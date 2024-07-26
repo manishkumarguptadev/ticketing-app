@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
 import { ThemeProvider } from "@/components/theme-provider";
-
+import { Toaster } from "react-hot-toast";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -29,7 +29,23 @@ export default function RootLayout({
           <main className="min-h-screen w-full p-4 sm:px-10 sm:py-8">
             {children}
           </main>
-        </ThemeProvider>
+        </ThemeProvider>{" "}
+        <Toaster
+          containerStyle={{ margin: "8px" }}
+          toastOptions={{
+            success: {
+              duration: 3000,
+            },
+            error: {
+              duration: 5000,
+            },
+            style: {
+              maxWidth: "500px",
+              backgroundColor: "hsl(var(--accent))",
+              color: "hsl(var(--accent-foreground))",
+            },
+          }}
+        />
       </body>
     </html>
   );

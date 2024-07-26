@@ -7,12 +7,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ControllerRenderProps } from "react-hook-form";
 
-function TicketStatusSelect() {
+function TicketStatusSelect({
+  value,
+  onChange,
+}: {
+  onChange: (...event: any[]) => void;
+  value: "OPEN" | "IN_PROGRESS" | "CLOSED" | undefined;
+}) {
   return (
     <div className="grid w-48 gap-2">
       <Label htmlFor="status">Status</Label>
-      <Select onValueChange={(value) => console.log(value)} defaultValue="OPEN">
+      <Select onValueChange={onChange} defaultValue={value}>
         <SelectTrigger id="status" aria-label="Select Status">
           <SelectValue placeholder="Select Status" />
         </SelectTrigger>

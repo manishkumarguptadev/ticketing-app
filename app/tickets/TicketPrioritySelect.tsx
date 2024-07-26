@@ -8,14 +8,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-function TicketPrioritySelect() {
+function TicketPrioritySelect({
+  value,
+  onChange,
+}: {
+  onChange: (...event: any[]) => void;
+  value: "LOW" | "MEDIUM" | "HIGH" | undefined;
+}) {
   return (
     <div className="grid w-48 gap-2">
       <Label htmlFor="status">Priority</Label>
-      <Select
-        onValueChange={(value) => console.log(value)}
-        defaultValue="MEDIUM"
-      >
+      <Select onValueChange={onChange} defaultValue={value}>
         <SelectTrigger id="priority" aria-label="Select Priority">
           <SelectValue placeholder="Select Priority" />
         </SelectTrigger>
