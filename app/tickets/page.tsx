@@ -9,13 +9,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import prisma from "@/prisma/client";
+import Link from "next/link";
 
 async function TicketsPage() {
   const tickets = await prisma.ticket.findMany();
   return (
     <>
       <div className="mb-4 flex items-center">
-        <Button>New Ticket</Button>
+        <Button asChild>
+          <Link href="/tickets/new">New Ticket</Link>
+        </Button>
       </div>
       <div className="rounded-lg border">
         <Table>
