@@ -34,7 +34,11 @@ async function TicketsPage() {
             {tickets.map((ticket) => (
               <TableRow key={ticket.id}>
                 <TableCell>
-                  <div className="font-medium">{ticket.title}</div>
+                  <div className="font-medium">
+                    <Button asChild variant={"link"}>
+                      <Link href={`/tickets/${ticket.id}`}>{ticket.title}</Link>
+                    </Button>
+                  </div>
                   <div className="flex gap-2">
                     <Badge
                       className={`${
