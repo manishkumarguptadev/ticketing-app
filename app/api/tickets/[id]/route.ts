@@ -1,5 +1,6 @@
 import { ticketSchema } from "@/ValidationSchemas/ticketSchema";
 import prisma from "@/prisma/client";
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(
@@ -33,6 +34,7 @@ export async function PATCH(
     where: { id: params.id },
     data: { ...result.data },
   });
+  revalidatePath("/tickets");
   return NextResponse.json(
     { success: true, data: updatedTicket },
     { status: 200 },

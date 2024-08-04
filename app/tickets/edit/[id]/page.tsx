@@ -1,53 +1,14 @@
-import TicketPrioritySelect from "@/app/tickets/TicketPrioritySelect";
-import TicketStatusSelect from "@/app/tickets/TicketStatusSelect";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import prisma from "@/prisma/client";
+import { notFound } from "next/navigation";
 
-function EditTicketPage() {
-  return (
-    <div className="mx-auto max-w-xl">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-muted-foreground">Edit Ticket</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form>
-            <div className="grid gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="title">Title</Label>
-                <Input
-                  id="title"
-                  type="text"
-                  className="w-full"
-                  placeholder="Title"
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  placeholder="Description"
-                  className="min-h-32"
-                />
-              </div>
-              <div className="flex gap-4">
-                <TicketStatusSelect />
+import EditTicketForm from "./EditTicketForm";
 
-                <TicketPrioritySelect />
-              </div>
-
-              <Button type="submit" className="max-w-32">
-                "Edit Ticket"
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
-  );
+async function EditTicketPage({ params }: { params: { id: string } }) {
+  const ticket = await prisma.ticket.findUnique({
+    where: { id: params.id },
+  });
+  if (!ticket) notFound();
+  return <EditTicketForm ticket={ticket} />;
 }
 
 export default EditTicketPage;
