@@ -13,7 +13,7 @@ async function TicketDetailPage({ params }: { params: { id: string } }) {
     <div className="m-4 grid gap-4 md:grid-cols-[1fr_250px]">
       <div className="grid gap-2">
         <h1 className="text-3xl font-bold">{ticket.title}</h1>
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+        <div className="flex max-w-3xl items-center gap-4 text-sm text-muted-foreground">
           <Badge
             className={
               ticket.status === "CLOSED"
@@ -38,7 +38,7 @@ async function TicketDetailPage({ params }: { params: { id: string } }) {
           >
             {ticket.priority}
           </Badge>
-          <div>
+          <div className="ml-auto">
             <div className="font-medium">
               Created&nbsp; :{" "}
               {ticket.createdAt.toLocaleDateString("en-US", {
@@ -68,7 +68,7 @@ async function TicketDetailPage({ params }: { params: { id: string } }) {
         </div>
       </div>
       <div className="flex flex-col gap-4">
-        <MoreOptions />
+        <MoreOptions id={ticket.id} />
       </div>
     </div>
   );

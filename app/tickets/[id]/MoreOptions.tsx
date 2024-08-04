@@ -1,9 +1,12 @@
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
-function MoreOptions() {
+function MoreOptions({ id }: { id: string }) {
   return (
     <>
-      <Button>Edit Ticket</Button>
+      <Button asChild>
+        <Link href={`/tickets/edit/${id}`}>Edit Ticket</Link>
+      </Button>
       <Button variant={"destructive"}>Delete Ticket</Button>
     </>
   );
