@@ -8,7 +8,7 @@ function MoreOptions({ id }: { id: string }) {
       <Button asChild>
         <Link href={`/tickets/edit/${id}`}>Edit Ticket</Link>
       </Button>
-      <DeleteTicketButton />
+      <DeleteTicketButton ticketId={id} />
     </>
   );
 }

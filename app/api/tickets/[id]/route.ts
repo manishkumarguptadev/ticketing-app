@@ -57,5 +57,6 @@ export async function DELETE(
   await prisma.ticket.delete({
     where: { id: params.id },
   });
+  revalidatePath("/tickets");
   return NextResponse.json({ success: true, data: {} }, { status: 200 });
 }
