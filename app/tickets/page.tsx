@@ -12,8 +12,25 @@ import prisma from "@/prisma/client";
 import Link from "next/link";
 import Pagination from "./Pagination";
 
-async function TicketsPage() {
-  const tickets = await prisma.ticket.findMany();
+interface Props {
+  searchParams: {
+    page: string;
+  };
+}
+
+async function TicketsPage({ searchParams }: Props) {
+  const pageSize = 5;
+  const ticketCount = await prisma.ticket.count();
+  const pageCount = Math.ceil(ticketCount / pageSize);
+
+  const currentPage =
+    +searchParams.page > 1 && +searchParams.page <= pageCount
+      ? +searchParams.page
+      : 1;
+  const tickets = await prisma.ticket.findMany({
+    take: pageSize,
+    skip: (currentPage - 1) * pageSize,
+  });
   return (
     <>
       <div className="mb-4 flex items-center">
@@ -120,7 +137,14 @@ async function TicketsPage() {
           </TableBody>
         </Table>
       </div>
-      <Pagination />
+      {pageCount > 1 && (
+        <Pagination
+          pageCount={pageCount}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          ticketCount={ticketCount}
+        />
+      )}
     </>
   );
 }
