@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import prisma from "@/prisma/client";
 import Link from "next/link";
+import Pagination from "./Pagination";
 
 async function TicketsPage() {
   const tickets = await prisma.ticket.findMany();
@@ -119,6 +120,7 @@ async function TicketsPage() {
           </TableBody>
         </Table>
       </div>
+      <Pagination />
     </>
   );
 }
