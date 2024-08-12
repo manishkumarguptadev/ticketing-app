@@ -12,16 +12,26 @@ import prisma from "@/prisma/client";
 import Link from "next/link";
 import Pagination from "./Pagination";
 import TicketStatusFilter from "./TicketStatusFilter";
+import { Status } from "@prisma/client";
 
 interface Props {
   searchParams: {
     page: string;
+    status: Status;
   };
 }
 
 async function TicketsPage({ searchParams }: Props) {
+  const statuses = Object.values(Status);
+  const status = statuses.includes(searchParams.status)
+    ? searchParams.status
+    : undefined;
   const pageSize = 5;
-  const ticketCount = await prisma.ticket.count();
+  const ticketCount = await prisma.ticket.count({
+    where: {
+      status,
+    },
+  });
   const pageCount = Math.ceil(ticketCount / pageSize);
 
   const currentPage =
@@ -29,6 +39,10 @@ async function TicketsPage({ searchParams }: Props) {
       ? +searchParams.page
       : 1;
   const tickets = await prisma.ticket.findMany({
+    where: {
+      status,
+    },
+
     take: pageSize,
     skip: (currentPage - 1) * pageSize,
   });
@@ -141,6 +155,7 @@ async function TicketsPage({ searchParams }: Props) {
       </div>
       {pageCount > 1 && (
         <Pagination
+        searchParams={searchParams}
           pageCount={pageCount}
           currentPage={currentPage}
           pageSize={pageSize}

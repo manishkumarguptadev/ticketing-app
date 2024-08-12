@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Status } from "@prisma/client";
 import Link from "next/link";
 import {
   RxDoubleArrowLeft,
@@ -8,12 +9,17 @@ import {
 } from "react-icons/rx";
 
 interface Props {
+  searchParams: {
+    page: string;
+    status: Status;
+  };
   pageCount: number;
   currentPage: number;
   pageSize: number;
   ticketCount: number;
 }
 export default function Pagination({
+  searchParams,
   pageCount,
   currentPage,
   pageSize,
@@ -45,9 +51,7 @@ export default function Pagination({
         >
           <Link
             href={{
-              query: {
-                page: 1,
-              },
+              query: { ...searchParams, page: 1 },
             }}
           >
             <RxDoubleArrowLeft />
@@ -61,6 +65,7 @@ export default function Pagination({
           <Link
             href={{
               query: {
+                ...searchParams,
                 page: currentPage > 2 ? currentPage - 1 : 1,
               },
             }}
@@ -76,6 +81,7 @@ export default function Pagination({
           <Link
             href={{
               query: {
+                ...searchParams,
                 page: currentPage < pageCount ? currentPage + 1 : pageCount,
               },
             }}
@@ -90,9 +96,7 @@ export default function Pagination({
         >
           <Link
             href={{
-              query: {
-                page: pageCount,
-              },
+              query: { ...searchParams, page: pageCount },
             }}
           >
             <RxDoubleArrowRight />
