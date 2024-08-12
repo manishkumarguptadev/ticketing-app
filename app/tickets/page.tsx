@@ -11,6 +11,7 @@ import {
 import prisma from "@/prisma/client";
 import Link from "next/link";
 import Pagination from "./Pagination";
+import TicketStatusFilter from "./TicketStatusFilter";
 
 interface Props {
   searchParams: {
@@ -33,7 +34,8 @@ async function TicketsPage({ searchParams }: Props) {
   });
   return (
     <>
-      <div className="mb-4 flex items-center">
+      <div className="mb-4 flex items-center justify-between">
+        <TicketStatusFilter />
         <Button asChild>
           <Link href="/tickets/new">New Ticket</Link>
         </Button>
