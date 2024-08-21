@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Status } from "@prisma/client";
+import { Priority, Status } from "@prisma/client";
 import Link from "next/link";
 import {
   RxDoubleArrowLeft,
@@ -12,6 +12,7 @@ interface Props {
   searchParams: {
     page: string;
     status: Status;
+    priority: Priority;
   };
   pageCount: number;
   currentPage: number;

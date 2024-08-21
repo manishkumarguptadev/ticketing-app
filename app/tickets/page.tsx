@@ -12,25 +12,31 @@ import prisma from "@/prisma/client";
 import Link from "next/link";
 import Pagination from "./Pagination";
 import TicketStatusFilter from "./TicketStatusFilter";
-import { Status } from "@prisma/client";
+import { Priority, Status } from "@prisma/client";
 import TicketPriorityFilter from "./TicketPriorityFilter";
 
 interface Props {
   searchParams: {
     page: string;
     status: Status;
+    priority: Priority;
   };
 }
 
 async function TicketsPage({ searchParams }: Props) {
   const statuses = Object.values(Status);
+  const priorities = Object.values(Priority);
   const status = statuses.includes(searchParams.status)
     ? searchParams.status
+    : undefined;
+  const priority = priorities.includes(searchParams.priority)
+    ? searchParams.priority
     : undefined;
   const pageSize = 5;
   const ticketCount = await prisma.ticket.count({
     where: {
       status,
+      priority,
     },
   });
   const pageCount = Math.ceil(ticketCount / pageSize);
@@ -42,6 +48,7 @@ async function TicketsPage({ searchParams }: Props) {
   const tickets = await prisma.ticket.findMany({
     where: {
       status,
+      priority,
     },
 
     take: pageSize,
