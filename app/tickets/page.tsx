@@ -13,6 +13,7 @@ import Link from "next/link";
 import Pagination from "./Pagination";
 import TicketStatusFilter from "./TicketStatusFilter";
 import { Status } from "@prisma/client";
+import TicketPriorityFilter from "./TicketPriorityFilter";
 
 interface Props {
   searchParams: {
@@ -49,7 +50,10 @@ async function TicketsPage({ searchParams }: Props) {
   return (
     <>
       <div className="mb-4 flex items-center justify-between">
-        <TicketStatusFilter />
+        <div className="flex gap-4">
+          <TicketStatusFilter />
+          <TicketPriorityFilter />
+        </div>
         <Button asChild>
           <Link href="/tickets/new">New Ticket</Link>
         </Button>
@@ -155,7 +159,7 @@ async function TicketsPage({ searchParams }: Props) {
       </div>
       {pageCount > 1 && (
         <Pagination
-        searchParams={searchParams}
+          searchParams={searchParams}
           pageCount={pageCount}
           currentPage={currentPage}
           pageSize={pageSize}
