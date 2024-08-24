@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Priority, Status } from "@prisma/client";
+import { Priority, Status, Ticket } from "@prisma/client";
 import Link from "next/link";
 import {
   RxDoubleArrowLeft,
@@ -10,6 +10,8 @@ import {
 
 interface Props {
   searchParams: {
+    orderBy: keyof Ticket;
+    sort: "asc" | "desc";
     page: string;
     status: Status;
     priority: Priority;

@@ -9,17 +9,20 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import prisma from "@/prisma/client";
+import { Priority, Status, Ticket } from "@prisma/client";
 import Link from "next/link";
+import { BsArrowDown, BsArrowUp } from "react-icons/bs";
 import Pagination from "./Pagination";
-import TicketStatusFilter from "./TicketStatusFilter";
-import { Priority, Status } from "@prisma/client";
 import TicketPriorityFilter from "./TicketPriorityFilter";
+import TicketStatusFilter from "./TicketStatusFilter";
 
 interface Props {
   searchParams: {
     page: string;
     status: Status;
     priority: Priority;
+    orderBy: keyof Ticket;
+    sort: "asc" | "desc";
   };
 }
 
@@ -32,6 +35,24 @@ async function TicketsPage({ searchParams }: Props) {
   const priority = priorities.includes(searchParams.priority)
     ? searchParams.priority
     : undefined;
+
+  const columns: {
+    label: string;
+    value: keyof Ticket;
+    classes: string;
+  }[] = [
+    { label: "Ticket", value: "title", classes: "" },
+    { label: "Status", value: "status", classes: "hidden sm:table-cell" },
+    { label: "Priority", value: "priority", classes: "hidden sm:table-cell" },
+    { label: "Created", value: "createdAt", classes: "hidden sm:table-cell" },
+  ];
+
+  const orderBy = columns
+    .map((column) => column.value)
+    .includes(searchParams.orderBy)
+    ? { [searchParams.orderBy]: searchParams.sort }
+    : undefined;
+
   const pageSize = 5;
   const ticketCount = await prisma.ticket.count({
     where: {
@@ -50,7 +71,7 @@ async function TicketsPage({ searchParams }: Props) {
       status,
       priority,
     },
-
+    orderBy,
     take: pageSize,
     skip: (currentPage - 1) * pageSize,
   });
@@ -69,10 +90,33 @@ async function TicketsPage({ searchParams }: Props) {
         <Table>
           <TableHeader>
             <TableRow className="bg-accent hover:bg-accent">
-              <TableHead>Ticket</TableHead>
-              <TableHead className="hidden sm:table-cell">Status</TableHead>
-              <TableHead className="hidden sm:table-cell">Priority</TableHead>
-              <TableHead className="hidden md:table-cell">Created</TableHead>
+              {columns.map((column) => (
+                <TableHead className={column.classes} key={column.value}>
+                  <Link
+                    href={{
+                      query: {
+                        ...searchParams,
+                        orderBy: column.value,
+                        sort:
+                          column.value === searchParams.orderBy
+                            ? searchParams.sort === "asc"
+                              ? "desc"
+                              : "asc"
+                            : "asc",
+                        page: 1,
+                      },
+                    }}
+                  >
+                    {column.label}
+                  </Link>
+                  {column.value === searchParams.orderBy &&
+                    (searchParams.sort === "asc" ? (
+                      <BsArrowDown className="m-1 inline" />
+                    ) : (
+                      <BsArrowUp className="m-1 inline" />
+                    ))}
+                </TableHead>
+              ))}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -81,10 +125,12 @@ async function TicketsPage({ searchParams }: Props) {
                 <TableCell>
                   <div className="font-medium">
                     <Button asChild variant={"link"}>
-                      <Link href={`/tickets/${ticket.id}`}>{ticket.title}</Link>
+                      <Link className="pl-0" href={`/tickets/${ticket.id}`}>
+                        {ticket.title}
+                      </Link>
                     </Button>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 pb-3 sm:pb-0">
                     <Badge
                       className={`${
                         ticket.status === "CLOSED"
