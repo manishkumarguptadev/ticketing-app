@@ -8,11 +8,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-function UserRoleSelect() {
+function UserRoleSelect({
+  value,
+  onChange,
+}: {
+  onChange: (...event: any[]) => void;
+  value: "ADMIN" | "TECH" | "USER" | undefined;
+}) {
   return (
     <div className="grid w-48 gap-2">
       <Label htmlFor="status">Role</Label>
-      <Select onValueChange={(value) => console.log(value)} defaultValue="USER">
+      <Select onValueChange={onChange} defaultValue={value}>
         <SelectTrigger id="role" aria-label="Select Role">
           <SelectValue placeholder="Select Role" />
         </SelectTrigger>
