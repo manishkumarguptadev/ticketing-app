@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import prisma from "@/prisma/client";
 import { userSchema } from "@/ValidationSchemas/userSchema";
+import { revalidatePath } from "next/cache";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -36,6 +37,6 @@ export async function POST(request: NextRequest) {
   const newUser = await prisma.user.create({
     data: { ...user, password: hashedPassword },
   });
-
+  revalidatePath("/users");
   return NextResponse.json({ success: true, data: newUser }, { status: 201 });
 }
