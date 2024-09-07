@@ -65,3 +65,20 @@ export async function DELETE(
   });
   return NextResponse.json({ success: true, data: {} }, { status: 200 });
 }
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } },
+) {
+  const user = await prisma.user.findUnique({
+    where: { id: params.id },
+  });
+  if (!user) {
+    return NextResponse.json(
+      { success: false, error: "User not found" },
+      { status: 404 },
+    );
+  }
+
+  return NextResponse.json({ success: true, data: user }, { status: 200 });
+}

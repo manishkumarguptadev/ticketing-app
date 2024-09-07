@@ -40,3 +40,9 @@ export async function POST(request: NextRequest) {
   revalidatePath("/users");
   return NextResponse.json({ success: true, data: newUser }, { status: 201 });
 }
+
+export async function GET(request: NextRequest) {
+  const users = await prisma.user.findMany();
+
+  return NextResponse.json({ success: true, data: users }, { status: 200 });
+}
