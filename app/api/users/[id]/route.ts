@@ -46,3 +46,22 @@ export async function PATCH(
     { status: 200 },
   );
 }
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } },
+) {
+  const userExists = await prisma.user.findUnique({
+    where: { id: params.id },
+  });
+  if (!userExists) {
+    return NextResponse.json(
+      { success: false, error: "User not found" },
+      { status: 404 },
+    );
+  }
+  await prisma.user.delete({
+    where: { id: params.id },
+  });
+  return NextResponse.json({ success: true, data: {} }, { status: 200 });
+}
