@@ -87,7 +87,7 @@ async function UsersPage() {
                     hour12: true,
                   })}
                 </TableCell>
-                <MoreOptions />
+                <MoreOptions id={user.id} />
               </TableRow>
             ))}
           </TableBody>

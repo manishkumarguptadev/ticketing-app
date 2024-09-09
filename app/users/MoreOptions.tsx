@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -7,11 +9,23 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { TableCell } from "@/components/ui/table";
-
 import { cn } from "@/lib/utils";
+import axios from "axios";
 import { MoreVertical } from "lucide-react";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
-function MoreOptions() {
+function MoreOptions({ id }: { id: string }) {
+  const router = useRouter();
+  const handleDelete = async (id: string) => {
+    try {
+      await axios.delete(`/api/users/${id}`);
+      router.refresh();
+      toast.success("User deleted successfully");
+    } catch (error) {
+      toast.error("User could not be deleted");
+    }
+  };
   return (
     <TableCell>
       <DropdownMenu>
@@ -22,7 +36,10 @@ function MoreOptions() {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
           <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem className={cn("focus:bg-destructive")}>
+          <DropdownMenuItem
+            className={cn("cursor-pointer focus:bg-destructive")}
+            onClick={() => handleDelete(id)}
+          >
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>

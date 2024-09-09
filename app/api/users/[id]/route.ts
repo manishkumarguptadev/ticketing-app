@@ -2,6 +2,7 @@ import prisma from "@/prisma/client";
 import { userPatchSchema } from "@/ValidationSchemas/userSchema";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import { revalidatePath } from "next/cache";
 
 export async function PATCH(
   request: NextRequest,
@@ -63,6 +64,7 @@ export async function DELETE(
   await prisma.user.delete({
     where: { id: params.id },
   });
+  revalidatePath("/users");
   return NextResponse.json({ success: true, data: {} }, { status: 200 });
 }
 
@@ -79,6 +81,5 @@ export async function GET(
       { status: 404 },
     );
   }
-
   return NextResponse.json({ success: true, data: user }, { status: 200 });
 }
