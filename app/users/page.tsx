@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+
 import {
   Table,
   TableBody,
@@ -10,6 +11,7 @@ import {
 } from "@/components/ui/table";
 import prisma from "@/prisma/client";
 import Link from "next/link";
+import MoreOptions from "./MoreOptions";
 
 async function UsersPage() {
   const users = await prisma.user.findMany();
@@ -27,6 +29,7 @@ async function UsersPage() {
               <TableHead>Name</TableHead>
               <TableHead className="hidden sm:table-cell">Role</TableHead>
               <TableHead className="hidden md:table-cell">Created</TableHead>
+              <TableHead></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -84,6 +87,7 @@ async function UsersPage() {
                     hour12: true,
                   })}
                 </TableCell>
+                <MoreOptions />
               </TableRow>
             ))}
           </TableBody>
