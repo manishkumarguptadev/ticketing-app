@@ -27,12 +27,15 @@ export const userPatchSchema = z
       .string()
       .min(3, "Username must be at least 3 characters.")
       .max(255),
-    password: z
-      .string()
-      .min(6, "Password must be at least 6 characters.")
-      .max(255)
-      .optional(),
-    confirmPassword: z.string().optional(),
+    password: z.union([
+      z
+        .string()
+        .min(6, "Password must be at least 6 characters.")
+        .max(255)
+        .optional(),
+      z.literal(""),
+    ]),
+    confirmPassword: z.union([z.string().optional(), z.literal("")]),
     role: z.nativeEnum(Role).optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {

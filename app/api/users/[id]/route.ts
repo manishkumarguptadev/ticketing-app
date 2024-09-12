@@ -42,6 +42,7 @@ export async function PATCH(
     where: { id: params.id },
     data: { ...user, password: hashedPassword! },
   });
+  revalidatePath("/users");
   return NextResponse.json(
     { success: true, data: updatedUser },
     { status: 200 },
