@@ -12,6 +12,7 @@ import { TableCell } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import axios from "axios";
 import { MoreVertical } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
@@ -35,7 +36,11 @@ function MoreOptions({ id }: { id: string }) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link className="w-full" href={`/users/edit/${id}`}>
+              Edit
+            </Link>
+          </DropdownMenuItem>
           <DropdownMenuItem
             className={cn("cursor-pointer focus:bg-destructive")}
             onClick={() => handleDelete(id)}
