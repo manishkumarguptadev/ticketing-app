@@ -10,6 +10,12 @@ async function TicketDetailPage({ params }: { params: { id: string } }) {
   });
   if (!ticket) notFound();
 
+  const users = await prisma.user.findMany({
+    where: {
+      role: { not: "USER" },
+    },
+  });
+
   return (
     <div className="m-4 grid gap-4 md:grid-cols-[1fr_250px]">
       <div className="grid gap-2">
@@ -70,7 +76,7 @@ async function TicketDetailPage({ params }: { params: { id: string } }) {
       </div>
 
       <div className="flex flex-col gap-16 pt-12">
-        <AssignTicketSelect />
+        <AssignTicketSelect ticket={ticket} users={users} />
         <div className="flex flex-col gap-4">
           <MoreOptions id={ticket.id} />
         </div>

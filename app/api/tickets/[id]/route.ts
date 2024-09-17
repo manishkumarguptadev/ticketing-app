@@ -21,6 +21,17 @@ export async function PATCH(
       { status: 400 },
     );
   }
+
+  const { assignedToUserId } = body;
+
+  if (assignedToUserId) {
+    const user = await prisma.user.findUnique({
+      where: { id: assignedToUserId },
+    });
+    if (!user)
+      return NextResponse.json({ error: "Invalid user." }, { status: 400 });
+  }
+
   const ticket = await prisma.ticket.findUnique({
     where: { id: params.id },
   });
