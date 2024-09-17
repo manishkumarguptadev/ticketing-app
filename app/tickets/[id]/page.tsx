@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { notFound } from "next/navigation";
 import MoreOptions from "./MoreOptions";
 import prisma from "@/prisma/client";
+import AssignTicketSelect from "../AssignTicketSelect";
 
 async function TicketDetailPage({ params }: { params: { id: string } }) {
   const ticket = await prisma.ticket.findUnique({
@@ -67,8 +68,12 @@ async function TicketDetailPage({ params }: { params: { id: string } }) {
           {ticket.description}
         </div>
       </div>
-      <div className="flex flex-col gap-4">
-        <MoreOptions id={ticket.id} />
+
+      <div className="flex flex-col gap-16 pt-12">
+        <AssignTicketSelect />
+        <div className="flex flex-col gap-4">
+          <MoreOptions id={ticket.id} />
+        </div>
       </div>
     </div>
   );
