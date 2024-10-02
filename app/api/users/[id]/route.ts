@@ -3,11 +3,19 @@ import { userPatchSchema } from "@/ValidationSchemas/userSchema";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
+import { getServerSession } from "next-auth";
+import authOptions from "@/app/auth/_options";
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } },
 ) {
+  const session = await getServerSession(authOptions);
+  if (!(session?.user.role === "ADMIN"))
+    return NextResponse.json(
+      { success: false, error: "Not authorized" },
+      { status: 401 },
+    );
   const body = await request.json();
 
   const result = userPatchSchema.safeParse(body);
@@ -53,6 +61,12 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } },
 ) {
+  const session = await getServerSession(authOptions);
+  if (!(session?.user.role === "ADMIN"))
+    return NextResponse.json(
+      { success: false, error: "Not authorized" },
+      { status: 401 },
+    );
   const userExists = await prisma.user.findUnique({
     where: { id: params.id },
   });

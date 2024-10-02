@@ -3,8 +3,11 @@ import { notFound } from "next/navigation";
 import MoreOptions from "./MoreOptions";
 import prisma from "@/prisma/client";
 import AssignTicketSelect from "../AssignTicketSelect";
+import { getServerSession } from "next-auth";
+import authOptions from "@/app/auth/_options";
 
 async function TicketDetailPage({ params }: { params: { id: string } }) {
+  const session = await getServerSession(authOptions);
   const ticket = await prisma.ticket.findUnique({
     where: { id: params.id },
   });
@@ -51,10 +54,11 @@ async function TicketDetailPage({ params }: { params: { id: string } }) {
           >
             {ticket.priority}
           </Badge>
+
           <div className="ml-auto">
             <div className="font-medium">
               Creator &nbsp; :{" "}
-              <span className="text-lg font-bold text-gray-700">
+              <span className="text-lg font-bold text-secondary-foreground">
                 {raisedByUser?.username}
               </span>
             </div>
@@ -87,12 +91,14 @@ async function TicketDetailPage({ params }: { params: { id: string } }) {
         </div>
       </div>
 
-      <div className="flex flex-col gap-16 pt-12">
-        <AssignTicketSelect ticket={ticket} users={users} />
-        <div className="flex flex-col gap-4">
-          <MoreOptions id={ticket.id} />
+      {session?.user.role === "ADMIN" && (
+        <div className="flex flex-col gap-16 pt-12">
+          <AssignTicketSelect ticket={ticket} users={users} />
+          <div className="flex flex-col gap-4">
+            <MoreOptions id={ticket.id} />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

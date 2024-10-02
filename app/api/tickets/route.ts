@@ -6,8 +6,13 @@ import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
-  const body = await request.json();
   const session = await getServerSession(authOptions);
+  if (!session)
+    return NextResponse.json(
+      { success: false, error: "Not authorized" },
+      { status: 401 },
+    );
+  const body = await request.json();
 
   const result = ticketSchema.safeParse(body);
 

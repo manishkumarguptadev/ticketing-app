@@ -11,9 +11,11 @@ import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 import { userSchema } from "@/ValidationSchemas/userSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { z } from "zod";
+import NotAuthorized from "@/components/not-authorized";
 
 type FormData = z.infer<typeof userSchema>;
 
@@ -23,6 +25,8 @@ function NewUserPage() {
     mode: "all",
     resolver: zodResolver(userSchema),
   });
+  const { status, data: session } = useSession();
+  if (!(session?.user.role === "ADMIN")) return <NotAuthorized />;
 
   const { isValid, isSubmitting, errors } = formState;
 

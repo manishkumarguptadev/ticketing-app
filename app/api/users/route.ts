@@ -3,8 +3,16 @@ import bcrypt from "bcryptjs";
 import prisma from "@/prisma/client";
 import { userSchema } from "@/ValidationSchemas/userSchema";
 import { revalidatePath } from "next/cache";
+import { getServerSession } from "next-auth";
+import authOptions from "@/app/auth/_options";
 
 export async function POST(request: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if (!(session?.user.role === "ADMIN"))
+    return NextResponse.json(
+      { success: false, error: "Not authorized" },
+      { status: 401 },
+    );
   const body = await request.json();
   const result = userSchema.safeParse(body);
 
@@ -42,6 +50,12 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if (!(session?.user.role === "ADMIN"))
+    return NextResponse.json(
+      { success: false, error: "Not authorized" },
+      { status: 401 },
+    );
   const users = await prisma.user.findMany();
 
   return NextResponse.json({ success: true, data: users }, { status: 200 });

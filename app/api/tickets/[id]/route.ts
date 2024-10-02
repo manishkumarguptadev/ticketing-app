@@ -2,11 +2,19 @@ import { ticketSchema } from "@/ValidationSchemas/ticketSchema";
 import prisma from "@/prisma/client";
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import authOptions from "@/app/auth/_options";
 
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } },
 ) {
+  const session = await getServerSession(authOptions);
+  if (!(session?.user.role === "ADMIN"))
+    return NextResponse.json(
+      { success: false, error: "Not authorized" },
+      { status: 401 },
+    );
   const body = await request.json();
 
   const result = ticketSchema.safeParse(body);
@@ -56,6 +64,12 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } },
 ) {
+  const session = await getServerSession(authOptions);
+  if (!(session?.user.role === "ADMIN"))
+    return NextResponse.json(
+      { success: false, error: "Not authorized" },
+      { status: 401 },
+    );
   const ticket = await prisma.ticket.findUnique({
     where: { id: params.id },
   });
