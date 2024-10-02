@@ -1,10 +1,13 @@
 import { ticketSchema } from "@/ValidationSchemas/ticketSchema";
+import authOptions from "@/app/auth/_options";
 import prisma from "@/prisma/client";
+import { getServerSession } from "next-auth";
 import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
+  const session = await getServerSession(authOptions);
 
   const result = ticketSchema.safeParse(body);
 
@@ -19,7 +22,9 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const newTicket = await prisma.ticket.create({ data: { ...result.data } });
+  const newTicket = await prisma.ticket.create({
+    data: { ...result.data, createdByUserId: session?.user.id! },
+  });
   revalidatePath("/tickets");
   return NextResponse.json({ success: true, data: newTicket }, { status: 201 });
 }

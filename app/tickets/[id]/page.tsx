@@ -16,6 +16,12 @@ async function TicketDetailPage({ params }: { params: { id: string } }) {
     },
   });
 
+  const raisedByUser = await prisma.user.findUnique({
+    where: {
+      id: ticket.createdByUserId,
+    },
+  });
+
   return (
     <div className="m-4 grid gap-4 md:grid-cols-[1fr_250px]">
       <div className="grid gap-2">
@@ -46,6 +52,12 @@ async function TicketDetailPage({ params }: { params: { id: string } }) {
             {ticket.priority}
           </Badge>
           <div className="ml-auto">
+            <div className="font-medium">
+              Creator &nbsp; :{" "}
+              <span className="text-lg font-bold text-gray-700">
+                {raisedByUser?.username}
+              </span>
+            </div>
             <div className="font-medium">
               Created&nbsp; :{" "}
               {ticket.createdAt.toLocaleDateString("en-US", {
