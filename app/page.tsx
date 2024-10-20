@@ -1,10 +1,10 @@
-import { Card } from "@/components/ui/card";
-import TicketSummary from "./TicketSummary";
-import prisma from "@/prisma/client";
-import { getServerSession } from "next-auth";
 import authOptions from "@/app/auth/_options";
 import NotAuthorized from "@/components/not-authorized";
+import prisma from "@/prisma/client";
+import { getServerSession } from "next-auth";
+import LatestTickets from "./LatestTickets";
 import TicketChart from "./TicketChart";
+import TicketSummary from "./TicketSummary";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
@@ -25,7 +25,7 @@ export default async function Home() {
         <TicketSummary open={open} inProgress={inProgress} closed={closed} />
         <TicketChart open={open} inProgress={inProgress} closed={closed} />
       </div>
-      <Card className="min-h-96 md:col-span-2"></Card>
+      <LatestTickets />
     </div>
   );
 }
