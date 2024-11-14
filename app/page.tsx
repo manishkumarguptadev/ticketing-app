@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import LatestTickets from "./LatestTickets";
 import TicketChart from "./TicketChart";
 import TicketSummary from "./TicketSummary";
+import Poller from "@/components/Poller";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
@@ -22,6 +23,7 @@ export default async function Home() {
   return (
     <div className="grid gap-4 md:grid-cols-5 md:gap-8">
       <div className="flex flex-col gap-4 md:col-span-3 md:gap-8">
+        <Poller ms={2000} />
         <TicketSummary open={open} inProgress={inProgress} closed={closed} />
         <TicketChart open={open} inProgress={inProgress} closed={closed} />
       </div>

@@ -17,6 +17,7 @@ import TicketPriorityFilter from "./TicketPriorityFilter";
 import TicketStatusFilter from "./TicketStatusFilter";
 import authOptions from "@/app/auth/_options";
 import { getServerSession } from "next-auth";
+import Poller from "@/components/Poller";
 interface Props {
   searchParams: {
     page: string;
@@ -88,6 +89,7 @@ async function TicketsPage({ searchParams }: Props) {
     <>
       <div className="mb-4 flex items-center justify-between">
         <div className="flex gap-4">
+          <Poller ms={2000} />
           <TicketStatusFilter />
           <TicketPriorityFilter />
         </div>

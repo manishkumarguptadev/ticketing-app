@@ -5,6 +5,7 @@ import prisma from "@/prisma/client";
 import AssignTicketSelect from "../AssignTicketSelect";
 import { getServerSession } from "next-auth";
 import authOptions from "@/app/auth/_options";
+import Poller from "@/components/Poller";
 
 async function TicketDetailPage({ params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions);
@@ -28,6 +29,8 @@ async function TicketDetailPage({ params }: { params: { id: string } }) {
   return (
     <div className="m-4 grid gap-4 md:grid-cols-[1fr_250px]">
       <div className="grid gap-2">
+        {" "}
+        <Poller ms={2000} />
         <h1 className="text-3xl font-bold">{ticket.title}</h1>
         <div className="flex max-w-3xl items-center gap-4 text-sm text-muted-foreground">
           <Badge
