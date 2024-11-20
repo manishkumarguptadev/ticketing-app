@@ -6,6 +6,7 @@ import AssignTicketSelect from "../AssignTicketSelect";
 import { getServerSession } from "next-auth";
 import authOptions from "@/app/auth/_options";
 import Poller from "@/components/Poller";
+import CloseTicketButton from "./CloseTicketButton";
 
 async function TicketDetailPage({ params }: { params: { id: string } }) {
   const session = await getServerSession(authOptions);
@@ -93,15 +94,18 @@ async function TicketDetailPage({ params }: { params: { id: string } }) {
           {ticket.description}
         </div>
       </div>
-
-      {session?.user.role === "ADMIN" && (
-        <div className="flex flex-col gap-16 pt-12">
+      <div className="flex flex-col gap-16 pt-12">
+        {session?.user.role === "ADMIN" && (
           <AssignTicketSelect ticket={ticket} users={users} />
-          <div className="flex flex-col gap-4">
-            <MoreOptions id={ticket.id} />
-          </div>
+        )}
+
+        <div className="flex flex-col gap-4">
+          {session?.user.role === "ADMIN" && <MoreOptions id={ticket.id} />}
+          {session?.user.role !== "USER" && (
+            <CloseTicketButton id={ticket.id} status={ticket.status} />
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

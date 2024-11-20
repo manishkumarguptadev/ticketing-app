@@ -5,6 +5,41 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import authOptions from "@/app/auth/_options";
 
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { id: string } },
+) {
+  const session = await getServerSession(authOptions);
+  if (session?.user.role === "USER")
+    return NextResponse.json(
+      { success: false, error: "Not authorized" },
+      { status: 401 },
+    );
+  const ticket = await prisma.ticket.findUnique({
+    where: { id: params.id },
+  });
+  if (!ticket) {
+    return NextResponse.json(
+      { success: false, error: "Ticket not found" },
+      { status: 404 },
+    );
+  }
+  const result = ticketSchema.safeParse(ticket);
+  const updatedTicket = await prisma.ticket.update({
+    where: { id: params.id },
+    data: {
+      ...result.data,
+      status: "CLOSED",
+      closedByUserId: session?.user.id,
+    },
+  });
+  revalidatePath("/tickets");
+  return NextResponse.json(
+    { success: true, data: updatedTicket },
+    { status: 200 },
+  );
+}
+
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } },

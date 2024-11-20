@@ -77,13 +77,13 @@ function EditTicketForm({ ticket }: { ticket: Ticket }) {
                 )}
               </div>
               <div className="flex gap-4">
-                <Controller
+                {/* <Controller
                   control={control}
                   name="status"
                   render={({ field: { value, onChange } }) => (
                     <TicketStatusSelect value={value} onChange={onChange} />
                   )}
-                />
+                /> */}
                 <Controller
                   control={control}
                   name="priority"
