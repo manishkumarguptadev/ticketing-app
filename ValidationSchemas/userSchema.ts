@@ -42,3 +42,14 @@ export const userPatchSchema = z
     message: "Password must match",
     path: ["confirmPassword"],
   });
+
+export const SigninFormSchema = z.object({
+  username: z
+    .string()
+    .min(3, "Username must be at least 3 characters.")
+    .max(255),
+  password: z
+    .string()
+    .min(6, "Password must be at least 6 characters.")
+    .max(255),
+});
