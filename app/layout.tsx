@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/header";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "react-hot-toast";
+import AuthProvider from "./(auth)/AuthProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -19,17 +20,19 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Header />
-          <main className="min-h-screen w-full p-4 sm:px-10 sm:py-8">
-            {children}
-          </main>
-        </ThemeProvider>{" "}
+        <AuthProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Header />
+            <main className="min-h-screen w-full p-4 sm:px-10 sm:py-8">
+              {children}
+            </main>
+          </ThemeProvider>
+        </AuthProvider>
         <Toaster
           containerStyle={{ margin: "8px" }}
           toastOptions={{

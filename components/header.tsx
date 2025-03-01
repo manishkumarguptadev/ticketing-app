@@ -4,6 +4,7 @@ import { Bug } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ModeToggle } from "./mode-toggle";
+import AuthStatus from "@/app/(auth)/AuthStatus";
 const links = [
   { label: "Dashboard", href: "/" },
   { label: "Tickets", href: "/tickets" },
@@ -28,7 +29,10 @@ function Header() {
           </Link>
         ))}
       </nav>
-      <ModeToggle />
+      <div className="flex items-center gap-6">
+        <ModeToggle />
+        <AuthStatus />
+      </div>
     </header>
   );
 }
