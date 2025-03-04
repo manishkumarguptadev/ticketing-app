@@ -21,10 +21,11 @@ import { SigninFormSchema } from "@/ValidationSchemas/userSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { FormError } from "../form-error";
+import { getAuthErrorMessage } from "@/lib/error";
 
 export default function SigninPage() {
   return (
@@ -37,8 +38,13 @@ export default function SigninPage() {
 function SigninForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || DEFAULT_LOGIN_REDIRECT;
-
   const [error, setError] = useState<string | undefined>("");
+  const urlError = searchParams.get("error") || "";
+
+  useEffect(() => {
+    setError(getAuthErrorMessage(urlError));
+  }, []);
+
   const form = useForm<z.infer<typeof SigninFormSchema>>({
     resolver: zodResolver(SigninFormSchema),
     defaultValues: {
