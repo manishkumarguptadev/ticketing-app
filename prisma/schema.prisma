@@ -21,8 +21,10 @@ model Ticket {
   priority         Priority @default(MEDIUM)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+  createdByUserId  String
+  createdByUser    User     @relation("CreatedTickets", fields: [createdByUserId], references: [id])
   assignedToUserId String?
-  assignedToUser   User?    @relation(fields: [assignedToUserId], references: [id])
+  assignedToUser   User?    @relation("AssignedTickets", fields: [assignedToUserId], references: [id])
 }
 
 model User {
@@ -33,7 +35,8 @@ model User {
   role            Role     @default(USER)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  assignedTickets Ticket[]
+  createdTickets  Ticket[] @relation("CreatedTickets")
+  assignedTickets Ticket[] @relation("AssignedTickets")
 }
 
 enum Role {
