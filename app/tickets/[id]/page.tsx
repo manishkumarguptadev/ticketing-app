@@ -3,13 +3,19 @@ import { notFound } from "next/navigation";
 import MoreOptions from "./MoreOptions";
 import prisma from "@/prisma/client";
 import AssignTicketSelect from "../AssignTicketSelect";
+import { auth } from "@/auth";
+import NotAuthorized from "@/components/not-authorized";
 
 async function TicketDetailPage({ params }: { params: { id: string } }) {
+  const session = await auth();
   const ticket = await prisma.ticket.findUnique({
     where: { id: params.id },
+    include: { createdByUser: true },
   });
-  if (!ticket) notFound();
+  if (!(session?.user.role === ticket?.createdByUser.role))
+    return <NotAuthorized />;
 
+  if (!ticket) notFound();
   const users = await prisma.user.findMany({
     where: {
       role: { not: "USER" },
@@ -20,6 +26,7 @@ async function TicketDetailPage({ params }: { params: { id: string } }) {
       id: ticket.createdByUserId,
     },
   });
+
   return (
     <div className="m-4 grid gap-4 md:grid-cols-[1fr_250px]">
       <div className="grid gap-2">
@@ -52,7 +59,7 @@ async function TicketDetailPage({ params }: { params: { id: string } }) {
           <div className="ml-auto">
             <div className="font-medium">
               Creator &nbsp; :{" "}
-              <span className="text-lg font-bold text-gray-700">
+              <span className="secondary-foreground text-lg font-bold">
                 {raisedByUser?.username}
               </span>
             </div>
@@ -85,12 +92,14 @@ async function TicketDetailPage({ params }: { params: { id: string } }) {
         </div>
       </div>
 
-      <div className="flex flex-col gap-16 pt-12">
-        <AssignTicketSelect ticket={ticket} users={users} />
-        <div className="flex flex-col gap-4">
-          <MoreOptions id={ticket.id} />
+      {session?.user.role === "ADMIN" && (
+        <div className="flex flex-col gap-16 pt-12">
+          <AssignTicketSelect ticket={ticket} users={users} />
+          <div className="flex flex-col gap-4">
+            <MoreOptions id={ticket.id} />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -12,8 +12,12 @@ import {
 import prisma from "@/prisma/client";
 import Link from "next/link";
 import MoreOptions from "./MoreOptions";
+import { auth } from "@/auth";
+import NotAuthorized from "@/components/not-authorized";
 
 async function UsersPage() {
+  const session = await auth();
+  if (!(session?.user.role === "ADMIN")) return <NotAuthorized />;
   const users = await prisma.user.findMany();
   return (
     <>

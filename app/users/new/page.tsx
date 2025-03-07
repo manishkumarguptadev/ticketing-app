@@ -9,8 +9,10 @@ import UserRoleSelect from "../UserRoleSelect";
 import axios from "axios";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
+import NotAuthorized from "@/components/not-authorized";
 import { userSchema } from "@/ValidationSchemas/userSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { z } from "zod";
@@ -18,6 +20,7 @@ import { z } from "zod";
 type FormData = z.infer<typeof userSchema>;
 
 function NewUserPage() {
+  const { data: session } = useSession();
   const router = useRouter();
   const { register, handleSubmit, formState, control } = useForm<FormData>({
     mode: "all",
@@ -36,6 +39,8 @@ function NewUserPage() {
       toast.error("Something went wrong. Please Try again.");
     }
   };
+  if (!(session?.user.role === "ADMIN")) return <NotAuthorized />;
+
   return (
     <div className="mx-auto max-w-xl">
       <Card>

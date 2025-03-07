@@ -7,7 +7,11 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(request: NextRequest) {
   const body = await request.json();
   const session = await auth();
-  console.log(session);
+  if (!session)
+    return NextResponse.json(
+      { success: false, error: "Not authorized" },
+      { status: 401 },
+    );
   const result = ticketSchema.safeParse(body);
 
   if (!result.success) {

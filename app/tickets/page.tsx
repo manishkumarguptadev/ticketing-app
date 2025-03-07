@@ -15,6 +15,7 @@ import { BsArrowDown, BsArrowUp } from "react-icons/bs";
 import Pagination from "./Pagination";
 import TicketPriorityFilter from "./TicketPriorityFilter";
 import TicketStatusFilter from "./TicketStatusFilter";
+import { auth } from "@/auth";
 
 interface Props {
   searchParams: {
@@ -27,6 +28,7 @@ interface Props {
 }
 
 async function TicketsPage({ searchParams }: Props) {
+  const session = await auth();
   const statuses = Object.values(Status);
   const priorities = Object.values(Priority);
   const status = statuses.includes(searchParams.status)
@@ -35,7 +37,8 @@ async function TicketsPage({ searchParams }: Props) {
   const priority = priorities.includes(searchParams.priority)
     ? searchParams.priority
     : undefined;
-
+  const createdByUserId =
+    session?.user.role === "ADMIN" ? undefined : session?.user.id;
   const columns: {
     label: string;
     value: keyof Ticket;
@@ -58,6 +61,9 @@ async function TicketsPage({ searchParams }: Props) {
     where: {
       status,
       priority,
+      ...(session?.user.role === "TECH"
+        ? { assignedToUserId: session.user.id }
+        : { createdByUserId }),
     },
   });
   const pageCount = Math.ceil(ticketCount / pageSize);
@@ -70,6 +76,9 @@ async function TicketsPage({ searchParams }: Props) {
     where: {
       status,
       priority,
+      ...(session?.user.role === "TECH"
+        ? { assignedToUserId: session.user.id }
+        : { createdByUserId }),
     },
     orderBy,
     take: pageSize,
@@ -82,9 +91,11 @@ async function TicketsPage({ searchParams }: Props) {
           <TicketStatusFilter />
           <TicketPriorityFilter />
         </div>
-        <Button asChild>
-          <Link href="/tickets/new">New Ticket</Link>
-        </Button>
+        {!(session?.user.role === "TECH") && (
+          <Button asChild>
+            <Link href="/tickets/new">New Ticket</Link>
+          </Button>
+        )}
       </div>
       <div className="rounded-lg border">
         <Table>
