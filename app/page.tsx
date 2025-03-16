@@ -5,6 +5,7 @@ import NotAuthorized from "@/components/not-authorized";
 import { auth } from "@/auth";
 import TicketSummary from "./TicketSummary";
 import TicketChart from "./TicketChart";
+import LatestTickets from "./LatestTickets";
 
 export default async function Home() {
   const session = await auth();
@@ -25,7 +26,7 @@ export default async function Home() {
         <TicketSummary open={open} inProgress={inProgress} closed={closed} />
         <TicketChart open={open} inProgress={inProgress} closed={closed} />
       </div>
-      <Card className="min-h-96 md:col-span-2"></Card>
+      <LatestTickets />
     </div>
   );
 }
