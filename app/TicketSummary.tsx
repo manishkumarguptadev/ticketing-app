@@ -19,7 +19,7 @@ function TicketSummary({ open, inProgress, closed }: Props) {
   return (
     <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
       {containers.map((container) => (
-        <Card className="min-h-28" key={container.status}>
+        <Card className="min-h-32" key={container.status}>
           <CardHeader>
             <CardTitle className="pb-2 text-center text-sm font-medium">
               <Link href={`/tickets?status=${container.status}`}>
